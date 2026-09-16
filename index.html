@@ -1,12 +1,715 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Reid Ocean</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reid Ocean</title>
+<meta name="description" content="The Reid family — a private harbor for our days, our walk with God, our home at 1231 Jubilee.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=Berkshire+Swash&family=Chewy&family=Grand+Hotel&family=Grandstander:wght@500;700&family=Nunito:wght@400;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --deep:#083d54; --ocean:#0e6187; --teal:#12a1a1; --turq:#2ec4c4;
+    --aqua:#5fe0d6; --shallow:#8ff0e4; --foam:#f4fdfb; --white:#ffffff;
+    --sand:#ecdcae; --sandDeep:#dcc78c; --green:#3fa87f; --seagrass:#5fbf95;
+    --gold:#c9a24b; --goldSoft:#e2c98a;
+    --ink:#0c3a4d; --ink2:#3d6577; --line:rgba(12,58,77,.12);
+    --card:rgba(255,255,255,.82);
+    --shadow:0 18px 50px -20px rgba(8,61,84,.45);
+    --radius:22px;
+    --font:"Nunito",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:var(--font); color:var(--ink);
+    background:linear-gradient(180deg,#eaf8f6 0%,#f4fbf8 40%,#fbf6e9 100%);
+    -webkit-font-smoothing:antialiased; min-height:100vh;
+  }
+  button{font-family:inherit; cursor:pointer}
+  input,textarea,select{font-family:inherit}
+  ::selection{background:rgba(46,196,196,.3)}
+
+  /* ============ ANIMATED AERIAL SHORELINE ============ */
+  .ocean{position:absolute; inset:0; overflow:hidden; z-index:0}
+  .ocean .scene{
+    position:absolute; left:-40%; top:-40%; width:180%; height:180%;
+    transform:rotate(-13deg);
+    background:linear-gradient(180deg,
+      var(--deep) 0%, var(--ocean) 20%, var(--teal) 38%,
+      var(--turq) 50%, var(--aqua) 58%, var(--shallow) 65%,
+      var(--foam) 69%, var(--sand) 74%, var(--sandDeep) 100%);
+  }
+  .scene::before{
+    content:""; position:absolute; inset:0;
+    background:
+      radial-gradient(120% 60% at 20% 12%, rgba(255,255,255,.18), transparent 60%),
+      repeating-linear-gradient(92deg, rgba(255,255,255,.05) 0 20px, transparent 20px 60px);
+    mix-blend-mode:screen; opacity:.5;
+    animation:drift 24s linear infinite;
+  }
+  @keyframes drift{to{transform:translateX(-80px)}}
+
+  .foam{
+    position:absolute; left:-10%; width:120%; height:120px; top:64%;
+    filter:blur(.4px); animation:wash 8.5s ease-in-out infinite;
+  }
+  .foam svg{display:block; width:100%; height:100%}
+  .foam.f2{top:66.5%; opacity:.75; animation-duration:11s; animation-delay:-3s}
+  .foam.f3{top:62%; opacity:.55; height:90px; animation-duration:7s; animation-delay:-1.5s}
+  @keyframes wash{
+    0%,100%{transform:translateY(26px) translateX(-14px); opacity:.5}
+    50%{transform:translateY(-30px) translateX(14px); opacity:1}
+  }
+  .glints{position:absolute; inset:0}
+  .glints i{
+    position:absolute; width:5px; height:5px; border-radius:50%;
+    background:radial-gradient(circle, #fff, rgba(255,255,255,0) 70%);
+    opacity:0; animation:twinkle 5s ease-in-out infinite;
+  }
+  @keyframes twinkle{0%,100%{opacity:0; transform:scale(.4)}50%{opacity:.9; transform:scale(1)}}
+
+  @media (prefers-reduced-motion:reduce){
+    .foam,.scene::before,.glints i{animation:none}
+    .foam{opacity:.85; transform:translateY(-4px)}
+  }
+
+  /* ============ LOGIN ============ */
+  #login{position:fixed; inset:0; z-index:50; display:grid; place-items:center; padding:24px}
+  .loginCard{
+    position:relative; z-index:2; width:min(440px,94vw);
+    background:rgba(255,255,255,.16); backdrop-filter:blur(16px) saturate(1.3);
+    -webkit-backdrop-filter:blur(16px) saturate(1.3);
+    border:1px solid rgba(255,255,255,.45); border-radius:28px;
+    padding:44px 38px 38px; text-align:center;
+    box-shadow:0 30px 70px -25px rgba(8,61,84,.6);
+    animation:rise .8s cubic-bezier(.2,.8,.2,1) both;
+  }
+  @keyframes rise{from{opacity:0; transform:translateY(24px) scale(.98)}}
+  .loginCard .wave-badge{font-size:34px; line-height:1}
+  .loginCard h1{
+    font-family:"Berkshire Swash",cursive; color:#fff; font-weight:400;
+    font-size:clamp(40px,9vw,58px); margin:6px 0 2px;
+    text-shadow:0 4px 24px rgba(8,61,84,.5), 0 1px 0 rgba(255,255,255,.3); letter-spacing:.5px;
+  }
+  .loginCard .tag{color:rgba(255,255,255,.92); font-weight:600; font-size:15px; margin:0 0 26px; text-shadow:0 2px 10px rgba(8,61,84,.4)}
+  .loginCard .field{position:relative; margin-bottom:14px}
+  .loginCard input{
+    width:100%; padding:15px 16px; border-radius:14px; font-size:16px; text-align:center;
+    border:1px solid rgba(255,255,255,.5); background:rgba(255,255,255,.9); color:var(--ink); outline:none; transition:.2s;
+  }
+  .loginCard input:focus{border-color:var(--gold); box-shadow:0 0 0 4px rgba(201,162,75,.3)}
+  .loginCard button{
+    width:100%; padding:15px; border:none; border-radius:14px; font-size:16px; font-weight:800; color:#fff;
+    background:linear-gradient(120deg,var(--teal),var(--ocean)); box-shadow:0 12px 24px -8px rgba(14,97,135,.7); transition:.2s; letter-spacing:.3px;
+  }
+  .loginCard button:hover{transform:translateY(-2px); box-shadow:0 16px 30px -8px rgba(14,97,135,.8)}
+  .loginErr{color:#fff; background:rgba(201,75,75,.7); border-radius:10px; padding:8px; margin-top:12px; font-size:14px; font-weight:600; display:none}
+  .loginErr.show{display:block; animation:shake .4s}
+  @keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .hint{margin-top:18px; color:rgba(255,255,255,.8); font-size:12.5px; text-shadow:0 1px 6px rgba(8,61,84,.5)}
+
+  /* ============ APP SHELL ============ */
+  #app{display:none; position:relative; z-index:1; min-height:100vh}
+  .topbar{
+    position:sticky; top:0; z-index:20; display:flex; align-items:center; gap:14px;
+    padding:12px clamp(14px,4vw,34px);
+    background:linear-gradient(120deg,var(--ocean),var(--teal)); color:#fff;
+    box-shadow:0 10px 30px -12px rgba(8,61,84,.6);
+  }
+  .brand{font-family:"Berkshire Swash",cursive; font-size:26px; margin-right:6px; white-space:nowrap; text-shadow:0 2px 10px rgba(0,0,0,.2)}
+  .brand .em{font-size:20px}
+  .nav{display:flex; gap:6px; flex-wrap:wrap; flex:1}
+  .nav button{
+    background:rgba(255,255,255,.14); color:#fff; border:1px solid rgba(255,255,255,.22);
+    padding:8px 14px; border-radius:999px; font-weight:700; font-size:14px; transition:.15s;
+  }
+  .nav button:hover{background:rgba(255,255,255,.28)}
+  .nav button.active{background:#fff; color:var(--ocean); border-color:#fff}
+  .logout{background:rgba(255,255,255,.12)!important; color:#fff; border:1px solid rgba(255,255,255,.3); padding:8px 14px; border-radius:999px; font-weight:700; font-size:13px}
+  .logout:hover{background:rgba(255,255,255,.25)!important}
+
+  .wrap{max-width:1040px; margin:0 auto; padding:clamp(18px,4vw,40px) clamp(14px,4vw,24px) 80px}
+  .view{display:none; animation:fade .5s ease both}
+  .view.active{display:block}
+  @keyframes fade{from{opacity:0; transform:translateY(12px)}}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px; backdrop-filter:blur(6px)}
+  .section-title{font-family:"Grand Hotel",cursive; font-size:clamp(30px,6vw,44px); color:var(--ocean); margin:0 0 4px; font-weight:400}
+  .section-sub{color:var(--ink2); margin:0 0 22px; font-weight:600}
+
+  .hero-banner{
+    position:relative; overflow:hidden; border-radius:var(--radius); margin-bottom:26px;
+    min-height:200px; display:flex; align-items:flex-end; box-shadow:var(--shadow); border:1px solid rgba(255,255,255,.5);
+  }
+  .hero-banner .ocean{border-radius:var(--radius)}
+  .hero-banner .banner-text{position:relative; z-index:2; padding:26px 28px; color:#fff}
+  .hero-banner h2{font-family:"Berkshire Swash",cursive; font-weight:400; font-size:clamp(30px,6vw,46px); margin:0; text-shadow:0 3px 16px rgba(8,61,84,.6)}
+  .hero-banner p{margin:4px 0 0; font-weight:700; text-shadow:0 2px 10px rgba(8,61,84,.6)}
+
+  .tiles{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:16px}
+  .tile{
+    position:relative; border:none; text-align:center; padding:24px 14px 20px; border-radius:20px; color:#fff;
+    box-shadow:0 14px 30px -14px rgba(8,61,84,.55); transition:.2s; overflow:hidden;
+  }
+  .tile:hover{transform:translateY(-4px)}
+  .tile .av{
+    width:64px; height:64px; border-radius:50%; margin:0 auto 10px; display:grid; place-items:center;
+    background:rgba(255,255,255,.9); font-weight:800; font-size:26px; box-shadow:inset 0 0 0 3px rgba(255,255,255,.6);
+  }
+  .tile .nm{font-size:26px; line-height:1.05}
+  .tile .rl{font-size:12.5px; font-weight:700; opacity:.9; margin-top:3px; letter-spacing:.3px}
+  .tile.home-tile{grid-column:1/-1; display:flex; align-items:center; gap:18px; text-align:left; padding:22px 24px; background:linear-gradient(120deg,var(--green),var(--teal))}
+  .tile.home-tile .ic{font-size:40px}
+  .tile.home-tile .nm{font-family:"Grandstander",cursive; font-weight:700}
+
+  .member-head{display:flex; align-items:center; gap:18px; margin-bottom:18px; flex-wrap:wrap}
+  .member-head .av{width:74px; height:74px; border-radius:50%; display:grid; place-items:center; color:#fff; font-weight:800; font-size:30px; box-shadow:var(--shadow)}
+  .member-name{font-size:clamp(40px,9vw,64px); line-height:1; font-weight:400}
+  .member-role{color:var(--ink2); font-weight:700}
+
+  .cats{display:flex; gap:8px; flex-wrap:wrap; margin:0 0 18px}
+  .cat-chip{border:1px solid var(--line); background:#fff; color:var(--ink2); font-weight:700; font-size:13.5px; padding:8px 14px; border-radius:999px; transition:.15s; display:inline-flex; align-items:center; gap:6px}
+  .cat-chip:hover{border-color:var(--teal)}
+  .cat-chip.active{color:#fff; border-color:transparent}
+  .cat-chip[data-cat="all"].active{background:linear-gradient(120deg,var(--ocean),var(--teal))}
+  .cat-chip[data-cat="spiritual"].active{background:linear-gradient(120deg,#7a5cc4,#9d7be0)}
+  .cat-chip[data-cat="physical"].active{background:linear-gradient(120deg,var(--green),var(--seagrass))}
+  .cat-chip[data-cat="financial"].active{background:linear-gradient(120deg,var(--gold),var(--goldSoft))}
+  .cat-chip[data-cat="godwalk"].active{background:linear-gradient(120deg,var(--ocean),var(--teal))}
+
+  .entry-form{display:grid; gap:12px; margin-bottom:22px}
+  .row{display:flex; gap:12px; flex-wrap:wrap}
+  .row>*{flex:1; min-width:150px}
+  label.fld{display:flex; flex-direction:column; gap:5px; font-size:12.5px; font-weight:800; color:var(--ink2); text-transform:uppercase; letter-spacing:.4px}
+  .entry-form input, .entry-form textarea, .entry-form select, .mini-form input, .mini-form select{
+    padding:11px 13px; border-radius:12px; border:1px solid var(--line); background:#fff; font-size:15px; color:var(--ink); outline:none; transition:.15s; width:100%;
+  }
+  .entry-form textarea{min-height:96px; resize:vertical; line-height:1.5}
+  .entry-form input:focus, .entry-form textarea:focus, .entry-form select:focus, .mini-form input:focus{border-color:var(--teal); box-shadow:0 0 0 3px rgba(46,196,196,.18)}
+  .btn{
+    border:none; border-radius:12px; padding:12px 20px; font-weight:800; color:#fff; font-size:14.5px;
+    background:linear-gradient(120deg,var(--teal),var(--ocean)); box-shadow:0 10px 22px -10px rgba(14,97,135,.7); transition:.18s; align-self:start;
+  }
+  .btn:hover{transform:translateY(-2px)}
+  .btn.gold{background:linear-gradient(120deg,var(--gold),#b8862f)}
+  .btn.ghost{background:transparent; color:var(--ink2); box-shadow:none; border:1px solid var(--line)}
+  .btn.sm{padding:8px 14px; font-size:13px}
+
+  .entries{display:grid; gap:14px}
+  .entry{border:1px solid var(--line); border-left:5px solid var(--teal); border-radius:16px; background:#fff; padding:16px 18px; animation:fade .3s ease both}
+  .entry[data-cat="spiritual"]{border-left-color:#9d7be0}
+  .entry[data-cat="physical"]{border-left-color:var(--green)}
+  .entry[data-cat="financial"]{border-left-color:var(--gold)}
+  .entry[data-cat="godwalk"]{border-left-color:var(--ocean)}
+  .entry .meta{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:6px}
+  .badge{font-size:11.5px; font-weight:800; padding:4px 10px; border-radius:999px; color:#fff; letter-spacing:.3px}
+  .badge.spiritual{background:#9d7be0}.badge.physical{background:var(--green)}.badge.financial{background:var(--gold)}.badge.godwalk{background:var(--ocean)}
+  .entry .date{color:var(--ink2); font-size:13px; font-weight:700}
+  .entry h4{margin:2px 0 6px; font-size:18px}
+  .entry p{margin:0; line-height:1.6; color:#274b58; white-space:pre-wrap}
+  .entry .del{margin-left:auto; background:none; border:none; color:#b06; opacity:.55; font-size:13px; font-weight:700}
+  .entry .del:hover{opacity:1}
+  .empty{text-align:center; color:var(--ink2); padding:30px 10px; font-weight:600}
+  .empty .big{font-size:34px; display:block; margin-bottom:6px}
+
+  .subtabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px}
+  .subtabs button{border:1px solid var(--line); background:#fff; color:var(--ink2); font-weight:800; padding:9px 16px; border-radius:999px; font-size:14px}
+  .subtabs button.active{background:linear-gradient(120deg,var(--green),var(--teal)); color:#fff; border-color:transparent}
+  .subview{display:none}.subview.active{display:block}
+  .mini-form{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px}
+
+  .list{display:grid; gap:12px}
+  .item{display:flex; align-items:center; gap:12px; background:#fff; border:1px solid var(--line); border-radius:14px; padding:13px 16px}
+  .item .chk{width:24px; height:24px; border-radius:8px; border:2px solid var(--teal); flex:none; display:grid; place-items:center; cursor:pointer; color:#fff; font-weight:900; font-size:14px}
+  .item.done .chk{background:var(--green); border-color:var(--green)}
+  .item.done .txt{text-decoration:line-through; color:var(--ink2)}
+  .item .txt{flex:1; font-weight:700}
+  .item .sub{font-weight:600; color:var(--ink2); font-size:13px}
+  .item .del{background:none;border:none;color:#b06;opacity:.5;font-weight:800;font-size:14px}
+  .item .del:hover{opacity:1}
+
+  .bdays{display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px}
+  .bday{background:linear-gradient(135deg,#fff,#fbf3dd); border:1px solid var(--line); border-radius:16px; padding:16px; text-align:center; position:relative}
+  .bday .cake{font-size:30px}
+  .bday .who{font-weight:800; font-size:18px; margin:4px 0 2px}
+  .bday .when{color:var(--gold); font-weight:800}
+  .bday .cd{color:var(--ink2); font-size:13px; font-weight:700; margin-top:4px}
+  .bday .del{position:absolute; top:8px; right:10px; background:none;border:none;color:#b06;opacity:.4;font-weight:800}
+  .bday .del:hover{opacity:1}
+
+  .pics{display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:14px}
+  .pic{border-radius:16px; overflow:hidden; border:1px solid var(--line); background:#fff; box-shadow:var(--shadow); position:relative}
+  .pic img{width:100%; height:150px; object-fit:cover; display:block}
+  .pic .cap{padding:9px 12px; font-weight:700; font-size:13.5px}
+  .pic .del{position:absolute; top:8px; right:8px; background:rgba(0,0,0,.5); color:#fff; border:none; border-radius:50%; width:26px; height:26px; font-weight:800}
+
+  .toolbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:24px; padding-top:18px; border-top:1px dashed var(--line)}
+  .toolbar .note{color:var(--ink2); font-size:12.5px; font-weight:600; margin-right:auto}
+  footer{text-align:center; color:var(--ink2); font-weight:700; padding:26px; font-size:13px}
+  footer .heart{color:var(--gold)}
+</style>
 </head>
 <body>
-  <h1>Reid Ocean</h1>
-  <p>www.reidocean.com</p>
+
+<!-- ================= LOGIN ================= -->
+<section id="login">
+  <div class="ocean" aria-hidden="true">
+    <div class="scene"></div>
+    <div class="foam f3"><svg viewBox="0 0 1440 120" preserveAspectRatio="none"><path fill="#f4fdfb" d="M0,64 C180,110 360,20 540,54 C720,88 900,24 1080,58 C1260,92 1380,44 1440,62 L1440,120 L0,120 Z"/></svg></div>
+    <div class="foam f1"><svg viewBox="0 0 1440 120" preserveAspectRatio="none"><path fill="#ffffff" d="M0,60 C160,104 340,18 520,52 C700,86 880,20 1060,56 C1240,92 1380,42 1440,60 L1440,120 L0,120 Z"/></svg></div>
+    <div class="foam f2"><svg viewBox="0 0 1440 120" preserveAspectRatio="none"><path fill="#eaf9f5" d="M0,66 C200,108 380,26 560,58 C740,90 920,30 1100,60 C1280,90 1390,50 1440,66 L1440,120 L0,120 Z"/></svg></div>
+    <div class="glints"></div>
+  </div>
+  <form class="loginCard" id="loginForm" autocomplete="off">
+    <div class="wave-badge">🌊</div>
+    <h1>Reid Ocean</h1>
+    <p class="tag">A private harbor for our family</p>
+    <div class="field">
+      <input type="password" id="pw" placeholder="Family password" autocomplete="current-password" aria-label="Family password">
+    </div>
+    <button type="submit">Come Aboard&nbsp; ⛵</button>
+    <div class="loginErr" id="loginErr">That's not quite it — try again 🐚</div>
+    <div class="hint">Keep this password just among the Reids.</div>
+  </form>
+</section>
+
+<!-- ================= APP ================= -->
+<div id="app">
+  <div class="topbar">
+    <div class="brand"><span class="em">🌊</span> Reid Ocean</div>
+    <nav class="nav" id="nav"></nav>
+    <button class="logout" id="logout">Sign out</button>
+  </div>
+
+  <div class="wrap">
+    <!-- HOME DASHBOARD -->
+    <section class="view active" id="view-home">
+      <div class="hero-banner">
+        <div class="ocean" aria-hidden="true">
+          <div class="scene"></div>
+          <div class="foam f1"><svg viewBox="0 0 1440 120" preserveAspectRatio="none"><path fill="#ffffff" d="M0,60 C160,104 340,18 520,52 C700,86 880,20 1060,56 C1240,92 1380,42 1440,60 L1440,120 L0,120 Z"/></svg></div>
+          <div class="foam f2"><svg viewBox="0 0 1440 120" preserveAspectRatio="none"><path fill="#eaf9f5" d="M0,66 C200,108 380,26 560,58 C740,90 920,30 1100,60 C1280,90 1390,50 1440,66 L1440,120 L0,120 Z"/></svg></div>
+        </div>
+        <div class="banner-text">
+          <h2 id="greeting">Welcome home, Reids</h2>
+          <p id="todayline"></p>
+        </div>
+      </div>
+      <div class="tiles" id="tiles"></div>
+    </section>
+
+    <div id="memberViews"></div>
+
+    <!-- 1231 JUBILEE -->
+    <section class="view" id="view-jubilee">
+      <h2 class="section-title" style="font-family:'Grandstander',cursive;font-weight:700">1231 Jubilee</h2>
+      <p class="section-sub">Our home — the projects, goals, pictures &amp; the birthdays we celebrate.</p>
+      <div class="subtabs">
+        <button class="active" data-sub="projects">🛠️ Home Projects</button>
+        <button data-sub="goals">🎯 Goals</button>
+        <button data-sub="pics">📸 Pictures</button>
+        <button data-sub="bdays">🎂 Birthdays</button>
+      </div>
+
+      <div class="subview active" id="sub-projects">
+        <div class="card">
+          <form class="mini-form" id="projForm">
+            <input type="text" id="projTitle" placeholder="Project (e.g. Repaint the dock railing)" style="flex:2">
+            <input type="text" id="projNotes" placeholder="Notes / target date (optional)" style="flex:2">
+            <button class="btn" type="submit">Add project</button>
+          </form>
+          <div class="list" id="projList"></div>
+        </div>
+      </div>
+
+      <div class="subview" id="sub-goals">
+        <div class="card">
+          <form class="mini-form" id="goalForm">
+            <input type="text" id="goalTitle" placeholder="A goal for our home &amp; family" style="flex:3">
+            <button class="btn" type="submit">Add goal</button>
+          </form>
+          <div class="list" id="goalList"></div>
+        </div>
+      </div>
+
+      <div class="subview" id="sub-pics">
+        <div class="card">
+          <form class="mini-form" id="picForm">
+            <input type="text" id="picCap" placeholder="Caption" style="flex:2">
+            <input type="file" id="picFile" accept="image/*" style="flex:2">
+            <button class="btn" type="submit">Add picture</button>
+          </form>
+          <div class="pics" id="picList"></div>
+        </div>
+      </div>
+
+      <div class="subview" id="sub-bdays">
+        <div class="card">
+          <form class="mini-form" id="bdayForm">
+            <input type="text" id="bdayName" placeholder="Name" style="flex:2">
+            <input type="date" id="bdayDate" style="flex:1">
+            <button class="btn gold" type="submit">Add birthday</button>
+          </form>
+          <div class="bdays" id="bdayList"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="toolbar">
+      <span class="note" id="saveNote">Everything is saved privately in this browser.</span>
+      <button class="btn ghost sm" id="exportBtn">⬇︎ Backup</button>
+      <button class="btn ghost sm" id="importBtn">⬆︎ Restore</button>
+      <input type="file" id="importFile" accept="application/json" hidden>
+    </div>
+  </div>
+
+  <footer>Made with <span class="heart">♥</span> for the Reids · 1231 Jubilee · <span id="yr"></span></footer>
+</div>
+
+<script>
+/* ================= CONFIG ================= */
+// SHA-256 of the family password. Default password: "Jubilee1231"
+// To change it: run  printf '%s' "YourNewPassword" | shasum -a 256
+// and paste the resulting hash below.
+const PW_HASH = "1bd6ca4181a22cf6adffcde11b6934f3093e159b6d0c5cf9c385c83e176efca2";
+const SESSION_KEY = "reidocean_session";
+const DATA_KEY = "reidocean_data_v1";
+
+const MEMBERS = [
+  {id:"matthew",  name:"Matthew", role:"Dad",      font:"Grand Hotel",   grad:["#0e6187","#12a1a1"], av:"M"},
+  {id:"jennifer", name:"Jennifer",role:"Mom",      font:"Pacifico",      grad:["#12a1a1","#3fa87f"], av:"J"},
+  {id:"john",     name:"John",    role:"Son",      font:"Chewy",         grad:["#2ec4c4","#0e6187"], av:"J"},
+  {id:"holly",    name:"Holly",   role:"Daughter", font:"Grandstander",  grad:["#5fbf95","#12a1a1"], av:"H"},
+  {id:"hannah",   name:"Hannah",  role:"Daughter", font:"Baloo 2",       grad:["#c9a24b","#3fa87f"], av:"H"},
+];
+const CATS = [
+  {id:"spiritual", label:"Spiritual", icon:"✝️"},
+  {id:"physical",  label:"Physical",  icon:"💪"},
+  {id:"financial", label:"Financial", icon:"💰"},
+  {id:"godwalk",   label:"God's Walk & Talk", icon:"🕊️"},
+];
+const CAT_LABEL = Object.fromEntries(CATS.map(c=>[c.id,c.label]));
+
+/* ================= DATA ================= */
+function blankData(){
+  const members={}; MEMBERS.forEach(m=>members[m.id]={entries:[]});
+  return {members, home:{projects:[],goals:[],pics:[],bdays:[]}};
+}
+let DATA = load();
+function load(){
+  try{
+    const d=JSON.parse(localStorage.getItem(DATA_KEY));
+    if(d&&d.members){const b=blankData(); return {...b,...d, members:{...b.members,...d.members}, home:{...b.home,...(d.home||{})}};}
+  }catch(e){}
+  return blankData();
+}
+function save(){localStorage.setItem(DATA_KEY, JSON.stringify(DATA));}
+const uid=()=>Math.random().toString(36).slice(2,10);
+
+/* ================= AUTH ================= */
+async function sha256(str){
+  const buf=await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+const loginSection=document.getElementById("login");
+const appEl=document.getElementById("app");
+function showApp(){ loginSection.style.display="none"; appEl.style.display="block"; }
+document.getElementById("loginForm").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const pw=document.getElementById("pw").value;
+  const err=document.getElementById("loginErr");
+  const hash=await sha256(pw);
+  if(hash===PW_HASH){
+    sessionStorage.setItem(SESSION_KEY,"1");
+    showApp(); renderAll();
+  }else{
+    err.classList.add("show"); document.getElementById("pw").value="";
+    setTimeout(()=>err.classList.remove("show"),2500);
+  }
+});
+document.getElementById("logout").addEventListener("click",()=>{
+  sessionStorage.removeItem(SESSION_KEY); location.reload();
+});
+if(sessionStorage.getItem(SESSION_KEY)==="1"){ showApp(); }
+
+/* ================= NAV ================= */
+const nav=document.getElementById("nav");
+const navItems=[{id:"home",label:"🏠 Home"}, ...MEMBERS.map(m=>({id:m.id,label:m.name})), {id:"jubilee",label:"⚓ 1231 Jubilee"}];
+navItems.forEach((n,i)=>{
+  const b=document.createElement("button");
+  b.textContent=n.label; b.dataset.view=n.id; if(i===0)b.classList.add("active");
+  b.onclick=()=>go(n.id); nav.appendChild(b);
+});
+function go(id){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  document.getElementById("view-"+id).classList.add("active");
+  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("active", b.dataset.view===id));
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* ================= MEMBER VIEWS ================= */
+const memberViews=document.getElementById("memberViews");
+MEMBERS.forEach(m=>{
+  const sec=document.createElement("section");
+  sec.className="view"; sec.id="view-"+m.id;
+  sec.innerHTML=`
+    <div class="member-head">
+      <div class="av" style="background:linear-gradient(135deg,${m.grad[0]},${m.grad[1]})">${m.av}</div>
+      <div>
+        <div class="member-name" style="font-family:'${m.font}',cursive;color:${m.grad[0]}">${m.name}</div>
+        <div class="member-role">${m.role} · Daily Diary</div>
+      </div>
+    </div>
+    <div class="card">
+      <form class="entry-form" data-member="${m.id}">
+        <div class="row">
+          <label class="fld">Category
+            <select class="e-cat">${CATS.map(c=>`<option value="${c.id}">${c.icon} ${c.label}</option>`).join("")}</select>
+          </label>
+          <label class="fld">Date
+            <input type="date" class="e-date">
+          </label>
+        </div>
+        <label class="fld">Title
+          <input type="text" class="e-title" placeholder="A word for today…">
+        </label>
+        <label class="fld">Journal
+          <textarea class="e-text" placeholder="What happened today? Where did you see God, feel strong, spend wisely…"></textarea>
+        </label>
+        <button class="btn" type="submit">Save entry</button>
+      </form>
+    </div>
+    <div class="cats" data-member="${m.id}" style="margin-top:22px">
+      <button class="cat-chip active" data-cat="all">All</button>
+      ${CATS.map(c=>`<button class="cat-chip" data-cat="${c.id}">${c.icon} ${c.label}</button>`).join("")}
+    </div>
+    <div class="entries" id="entries-${m.id}"></div>
+  `;
+  memberViews.appendChild(sec);
+
+  sec.querySelector(".e-date").value=todayStr();
+
+  sec.querySelector(".entry-form").addEventListener("submit",(e)=>{
+    e.preventDefault();
+    const title=sec.querySelector(".e-title").value.trim();
+    const text=sec.querySelector(".e-text").value.trim();
+    if(!title && !text) return;
+    DATA.members[m.id].entries.unshift({
+      id:uid(), cat:sec.querySelector(".e-cat").value,
+      date:sec.querySelector(".e-date").value||todayStr(),
+      title:title||"(untitled)", text
+    });
+    save();
+    sec.querySelector(".e-title").value=""; sec.querySelector(".e-text").value="";
+    renderEntries(m.id);
+  });
+
+  sec.querySelectorAll(".cat-chip").forEach(chip=>{
+    chip.onclick=()=>{
+      sec.querySelectorAll(".cat-chip").forEach(c=>c.classList.remove("active"));
+      chip.classList.add("active"); renderEntries(m.id, chip.dataset.cat);
+    };
+  });
+});
+
+function renderEntries(mid, filter){
+  const box=document.getElementById("entries-"+mid);
+  const active=document.querySelector(`.cats[data-member="${mid}"] .cat-chip.active`);
+  if(active) filter=active.dataset.cat;
+  filter=filter||"all";
+  let list=DATA.members[mid].entries.slice();
+  if(filter!=="all") list=list.filter(e=>e.cat===filter);
+  list.sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+  if(!list.length){
+    box.innerHTML=`<div class="empty card"><span class="big">🐚</span>No entries yet — start today's journal above.</div>`;
+    return;
+  }
+  box.innerHTML=list.map(e=>`
+    <article class="entry" data-cat="${e.cat}">
+      <div class="meta">
+        <span class="badge ${e.cat}">${CAT_LABEL[e.cat]||e.cat}</span>
+        <span class="date">${fmtDate(e.date)}</span>
+        <button class="del" data-id="${e.id}">Delete</button>
+      </div>
+      <h4>${esc(e.title)}</h4>
+      ${e.text?`<p>${esc(e.text)}</p>`:""}
+    </article>`).join("");
+  box.querySelectorAll(".del").forEach(b=>b.onclick=()=>{
+    if(!confirm("Delete this entry?"))return;
+    DATA.members[mid].entries=DATA.members[mid].entries.filter(x=>x.id!==b.dataset.id);
+    save(); renderEntries(mid);
+  });
+}
+
+/* ================= HOME DASHBOARD ================= */
+function renderHome(){
+  const tiles=document.getElementById("tiles");
+  tiles.innerHTML="";
+  MEMBERS.forEach(m=>{
+    const b=document.createElement("button");
+    b.className="tile"; b.style.background=`linear-gradient(135deg,${m.grad[0]},${m.grad[1]})`;
+    const n=DATA.members[m.id].entries.length;
+    b.innerHTML=`<div class="av" style="color:${m.grad[0]}">${m.av}</div>
+      <div class="nm" style="font-family:'${m.font}',cursive">${m.name}</div>
+      <div class="rl">${m.role} · ${n} ${n===1?"entry":"entries"}</div>`;
+    b.onclick=()=>go(m.id); tiles.appendChild(b);
+  });
+  const h=document.createElement("button");
+  h.className="tile home-tile"; h.onclick=()=>go("jubilee");
+  h.innerHTML=`<div class="ic">⚓</div><div><div class="nm">1231 Jubilee</div><div class="rl">Home projects · goals · pictures · birthdays</div></div>`;
+  tiles.appendChild(h);
+
+  document.getElementById("greeting").textContent=greetWord()+", Reids";
+  document.getElementById("todayline").textContent=new Date().toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric",year:"numeric"});
+}
+function greetWord(){const h=new Date().getHours(); return h<12?"Good morning":h<17?"Good afternoon":"Good evening";}
+
+/* ================= JUBILEE ================= */
+document.querySelectorAll(".subtabs button").forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll(".subtabs button").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    document.querySelectorAll(".subview").forEach(v=>v.classList.remove("active"));
+    document.getElementById("sub-"+b.dataset.sub).classList.add("active");
+  };
+});
+
+document.getElementById("projForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const t=document.getElementById("projTitle").value.trim(); if(!t)return;
+  DATA.home.projects.push({id:uid(),title:t,notes:document.getElementById("projNotes").value.trim(),done:false});
+  save(); e.target.reset(); renderProjects();
+});
+function renderProjects(){
+  const el=document.getElementById("projList");
+  if(!DATA.home.projects.length){el.innerHTML=emptyMsg("🛠️","No projects yet — add the first one above.");return;}
+  el.innerHTML=DATA.home.projects.map(p=>`
+    <div class="item ${p.done?"done":""}">
+      <div class="chk" data-id="${p.id}">${p.done?"✓":""}</div>
+      <div class="txt">${esc(p.title)}${p.notes?` <span class="sub">— ${esc(p.notes)}</span>`:""}</div>
+      <button class="del" data-id="${p.id}">✕</button>
+    </div>`).join("");
+  el.querySelectorAll(".chk").forEach(c=>c.onclick=()=>{const p=DATA.home.projects.find(x=>x.id===c.dataset.id);p.done=!p.done;save();renderProjects();});
+  el.querySelectorAll(".del").forEach(d=>d.onclick=()=>{DATA.home.projects=DATA.home.projects.filter(x=>x.id!==d.dataset.id);save();renderProjects();});
+}
+
+document.getElementById("goalForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const t=document.getElementById("goalTitle").value.trim(); if(!t)return;
+  DATA.home.goals.push({id:uid(),title:t,done:false});
+  save(); e.target.reset(); renderGoals();
+});
+function renderGoals(){
+  const el=document.getElementById("goalList");
+  if(!DATA.home.goals.length){el.innerHTML=emptyMsg("🎯","No goals yet — dream a little above.");return;}
+  el.innerHTML=DATA.home.goals.map(g=>`
+    <div class="item ${g.done?"done":""}">
+      <div class="chk" data-id="${g.id}">${g.done?"✓":""}</div>
+      <div class="txt">${esc(g.title)}</div>
+      <button class="del" data-id="${g.id}">✕</button>
+    </div>`).join("");
+  el.querySelectorAll(".chk").forEach(c=>c.onclick=()=>{const g=DATA.home.goals.find(x=>x.id===c.dataset.id);g.done=!g.done;save();renderGoals();});
+  el.querySelectorAll(".del").forEach(d=>d.onclick=()=>{DATA.home.goals=DATA.home.goals.filter(x=>x.id!==d.dataset.id);save();renderGoals();});
+}
+
+document.getElementById("picForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const file=document.getElementById("picFile").files[0];
+  const cap=document.getElementById("picCap").value.trim();
+  if(!file){alert("Choose a photo first.");return;}
+  const r=new FileReader();
+  r.onload=()=>{
+    DATA.home.pics.unshift({id:uid(),cap,data:r.result});
+    try{save();}catch(err){DATA.home.pics.shift();alert("That image is a bit large for browser storage. Try a smaller one.");return;}
+    e.target.reset(); renderPics();
+  };
+  r.readAsDataURL(file);
+});
+function renderPics(){
+  const el=document.getElementById("picList");
+  if(!DATA.home.pics.length){el.innerHTML=emptyMsg("📸","No pictures yet — add a family favorite above.");return;}
+  el.innerHTML=DATA.home.pics.map(p=>`
+    <figure class="pic">
+      <button class="del" data-id="${p.id}">✕</button>
+      <img src="${p.data}" alt="${esc(p.cap)}">
+      ${p.cap?`<figcaption class="cap">${esc(p.cap)}</figcaption>`:""}
+    </figure>`).join("");
+  el.querySelectorAll(".del").forEach(d=>d.onclick=()=>{if(!confirm("Remove this picture?"))return;DATA.home.pics=DATA.home.pics.filter(x=>x.id!==d.dataset.id);save();renderPics();});
+}
+
+document.getElementById("bdayForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const n=document.getElementById("bdayName").value.trim();
+  const d=document.getElementById("bdayDate").value;
+  if(!n||!d)return;
+  DATA.home.bdays.push({id:uid(),name:n,date:d});
+  save(); e.target.reset(); renderBdays();
+});
+function renderBdays(){
+  const el=document.getElementById("bdayList");
+  if(!DATA.home.bdays.length){el.innerHTML=emptyMsg("🎂","No birthdays yet — add the family's days above.");return;}
+  const sorted=DATA.home.bdays.slice().sort((a,b)=>daysUntil(a.date)-daysUntil(b.date));
+  el.innerHTML=sorted.map(b=>{
+    const du=daysUntil(b.date);
+    return `<div class="bday">
+      <button class="del" data-id="${b.id}">✕</button>
+      <div class="cake">🎂</div>
+      <div class="who">${esc(b.name)}</div>
+      <div class="when">${fmtBday(b.date)}</div>
+      <div class="cd">${du===0?"🎉 Today!":du===1?"Tomorrow":du+" days away"}${ageIf(b.date)}</div>
+    </div>`;
+  }).join("");
+  el.querySelectorAll(".del").forEach(d=>d.onclick=()=>{DATA.home.bdays=DATA.home.bdays.filter(x=>x.id!==d.dataset.id);save();renderBdays();});
+}
+
+/* ================= BACKUP / RESTORE ================= */
+document.getElementById("exportBtn").onclick=()=>{
+  const blob=new Blob([JSON.stringify(DATA,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="reid-ocean-backup.json"; a.click();
+};
+document.getElementById("importBtn").onclick=()=>document.getElementById("importFile").click();
+document.getElementById("importFile").addEventListener("change",e=>{
+  const f=e.target.files[0]; if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{const d=JSON.parse(r.result); if(!d.members)throw 0;
+      DATA=d; save(); renderAll(); alert("Restored your family backup. 🌊");
+    }catch(err){alert("That file didn't look like a Reid Ocean backup.");}
+  };
+  r.readAsText(f);
+});
+
+/* ================= HELPERS ================= */
+function todayStr(){const d=new Date();const off=d.getTimezoneOffset();return new Date(d-off*60000).toISOString().slice(0,10);}
+function esc(s){return (s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function fmtDate(s){if(!s)return"";const d=new Date(s+"T00:00");return d.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric",year:"numeric"});}
+function fmtBday(s){const d=new Date(s+"T00:00");return d.toLocaleDateString(undefined,{month:"long",day:"numeric"});}
+function daysUntil(s){const t=new Date();t.setHours(0,0,0,0);const d=new Date(s+"T00:00");d.setFullYear(t.getFullYear());if(d<t)d.setFullYear(t.getFullYear()+1);return Math.round((d-t)/86400000);}
+function ageIf(s){const b=new Date(s+"T00:00");if(b.getFullYear()<1920)return"";const t=new Date();let a=t.getFullYear()-b.getFullYear();const m=new Date(b);m.setFullYear(t.getFullYear());if(m<new Date(t.toDateString()))a++;if(a>0&&a<130)return ` · turning ${a}`;return"";}
+function emptyMsg(icon,txt){return `<div class="empty"><span class="big">${icon}</span>${txt}</div>`;}
+
+/* ================= INIT ================= */
+function renderAll(){
+  renderHome();
+  MEMBERS.forEach(m=>renderEntries(m.id));
+  renderProjects(); renderGoals(); renderPics(); renderBdays();
+}
+document.getElementById("yr").textContent=new Date().getFullYear();
+renderAll();
+
+(function(){
+  document.querySelectorAll(".glints").forEach(box=>{
+    for(let i=0;i<14;i++){
+      const s=document.createElement("i");
+      s.style.left=(Math.random()*70)+"%"; s.style.top=(Math.random()*55)+"%";
+      s.style.animationDelay=(Math.random()*5)+"s";
+      box.appendChild(s);
+    }
+  });
+})();
+</script>
 </body>
 </html>
